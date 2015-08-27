@@ -19,6 +19,8 @@ public class NetworkManager : MonoBehaviour {
 	public int selGridInt = 0;
 	public string[] selStrings = new string[] { "Master", "Wifi", "Bluetooth" };
 
+    private bool showFishLog;
+
 	public NetworkView nView;
 
     private bool buttonDown;
@@ -85,39 +87,60 @@ public class NetworkManager : MonoBehaviour {
 		GUIUtility.RotateAroundPivot(rotAngle, pivotPoint);
 		
 		
+		if (!showFishLog) { 
+		    GUILayout.BeginVertical("Box");
+		    selGridInt = GUI.SelectionGrid(new Rect(Screen.width / 2, Screen.height / 2 - 200, 200, 300), selGridInt, selStrings, 1,guiStyle);
+		    //selGridInt = GUILayout.SelectionGrid(selGridInt, selStrings, 1, guiStyle);
 		
-		GUILayout.BeginVertical("Box");
-		selGridInt = GUI.SelectionGrid(new Rect(Screen.width / 2, Screen.height / 2 - 200, 200, 300), selGridInt, selStrings, 1,guiStyle);
-		//selGridInt = GUILayout.SelectionGrid(selGridInt, selStrings, 1, guiStyle);
+		    if (selStrings[selGridInt] == "Master")
+			    if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 105, 200, 100), "Refresh List",guiStyle))
+		    {
+			    StartCoroutine("RefresHostList");
+		    }
 		
-		if (selStrings[selGridInt] == "Master")
-			if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 105, 200, 100), "Refresh List",guiStyle))
-		{
-			StartCoroutine("RefresHostList");
-		}
+		    if (selStrings[selGridInt] == "Wifi")
+		    {
+			    hostData = null;
+			    ipString = GUI.TextField(new Rect(Screen.width / 2, Screen.height / 2 +105, 200, 45), ipString,guiStyle);
+			    portString = GUI.TextField(new Rect(Screen.width / 2, Screen.height / 2 + 155, 200, 45), portString, guiStyle);
+			    if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 210, 200f, 100f), "Connect",guiStyle))
+			    {
+				    Debug.Log("Trying to connect to server");
+				    string ip = ipString;
+				    int port = int.Parse(portString);
+				    Network.Connect(ip, port);
+			    }
+		    }
 		
-		if (selStrings[selGridInt] == "Wifi")
-		{
-			hostData = null;
-			ipString = GUI.TextField(new Rect(Screen.width / 2, Screen.height / 2 +105, 200, 45), ipString,guiStyle);
-			portString = GUI.TextField(new Rect(Screen.width / 2, Screen.height / 2 + 155, 200, 45), portString, guiStyle);
-			if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 210, 200f, 100f), "Connect",guiStyle))
-			{
-				Debug.Log("Trying to connect to server");
-				string ip = ipString;
-				int port = int.Parse(portString);
-				Network.Connect(ip, port);
-			}
-		}
-		
-		if (selStrings[selGridInt] == "Bluetooth")
-		{
-			// Todo: Add bluetooth
-		}
-		
-		
-		
-		if (hostData != null)
+		    if (selStrings[selGridInt] == "Bluetooth")
+		    {
+			    // Todo: Add bluetooth
+		    }
+
+            if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 350, 200, 100), "Fish Log", guiStyle))
+            {
+                GameControl.control.currentState = GameControl.State.fishlog;
+                showFishLog = true;
+            }
+        }
+
+        if (showFishLog)
+        {
+            if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 350, 200, 100), "< Back", guiStyle))
+            {
+                showFishLog = false;
+                GameControl.control.currentState = GameControl.State.connect;
+            }
+
+            // Clears the fish log, for debugging
+            if (GUI.Button(new Rect(Screen.width / 2 +  220, Screen.height / 2 + 350, 120, 100), "X Clear", guiStyle))
+            {
+                FishManager.fishmanager.fishLog.Clear();
+            }
+
+        }
+
+        if (hostData != null)
 		{
 			for (int i = 0; i < hostData.Length; i++)
 			{   //                  Screen.height / 2 + 215, 200f, 100f

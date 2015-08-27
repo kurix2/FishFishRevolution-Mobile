@@ -1,0 +1,4 @@
+ID,Name,Prefab,Rarity,Min weight,Max Weight,Move Pattern,Speed,Endurance,Icon
+0,Random Fish,Fish,10,6,16,1,2,100,RandomFishIcon
+1,Big Mouth Bass,LargeMouthBass,10,6,16,1,2,100,BigMouthBassIcon
+2,Bluefin Tuna,BlackTuna,10,400,475,1,2,100,BluefinTunaIcon
