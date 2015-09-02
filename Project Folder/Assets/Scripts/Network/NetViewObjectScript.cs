@@ -4,6 +4,8 @@ using System.Collections;
 
 public class NetViewObjectScript : MonoBehaviour {
 
+    public GameObject rodRotationObj;
+
     public Vector3 acceRotationVector;
     public Quaternion reelRotationVector;
 	public float speed = 0.1f;
@@ -74,7 +76,9 @@ public class NetViewObjectScript : MonoBehaviour {
     {
         if (stream.isWriting)
         {
-            Vector3 acceRot = acceRotationVector;
+            // Vector3 acceRot = acceRotationVector;
+            //stream.Serialize(ref acceRot);
+            Quaternion acceRot = rodRotationObj.transform.rotation;
             stream.Serialize(ref acceRot);
             Quaternion reelRot = reelRotationVector;
             stream.Serialize(ref reelRot);
