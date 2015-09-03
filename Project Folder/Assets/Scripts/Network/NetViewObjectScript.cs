@@ -76,10 +76,10 @@ public class NetViewObjectScript : MonoBehaviour {
     {
         if (stream.isWriting)
         {
-            // Vector3 acceRot = acceRotationVector;
-            //stream.Serialize(ref acceRot);
-            Quaternion acceRot = rodRotationObj.transform.rotation;
+             Vector3 acceRot = acceRotationVector;
             stream.Serialize(ref acceRot);
+          //  Quaternion acceRot = rodRotationObj.transform.rotation;
+          //  stream.Serialize(ref acceRot);
             Quaternion reelRot = reelRotationVector;
             stream.Serialize(ref reelRot);
         }
