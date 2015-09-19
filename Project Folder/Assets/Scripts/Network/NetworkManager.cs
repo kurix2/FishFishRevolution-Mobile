@@ -4,16 +4,18 @@ using System.Collections;
 
 public class NetworkManager : MonoBehaviour {
 	
-	/* Not being used for now
+	//Not being used for now
 	public Button connectButton;
 	public InputField ipInput;
     public InputField portInput;
     public Toggle wifiToggle;
-    */
+    
 	
 	// Default Wifi connection
 	public string ipString = "127.0.0.1";
 	public string portString = "8888";
+
+    private GameControl gameControl;
 	
 	// Select buttons
 	public int selGridInt = 0;
@@ -27,7 +29,23 @@ public class NetworkManager : MonoBehaviour {
 
 	void Start()
 	{
-		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        gameControl = GameControl.control;
+        string  prefIP = PlayerPrefs.GetString("savedIP");
+        if (prefIP.Length == 0)
+            ipInput.text = "127.0.0.1";
+        else
+            ipInput.text = prefIP;
+
+        int prefPort = PlayerPrefs.GetInt("savedPort");
+        Debug.Log(prefPort);
+        if (prefPort == 0)
+            portInput.text = "8888";
+        else
+            portInput.text = "" + prefPort;
+
+
+
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
 	}
 	
 	
@@ -58,6 +76,12 @@ public class NetworkManager : MonoBehaviour {
 	private Vector2 pivotPoint;
 	public void OnGUI()
 	{
+
+        // Debugging bool, removes UI completely
+        bool noui = true;
+        if (noui)
+            return;
+
 		if (Network.isClient) {
             //if (GUI.RepeatButton(new Rect(Screen.width / 3 - 100, Screen.height / 3, 100, 50), "Cast"))
             //{
@@ -153,7 +177,20 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 	
-	
+	public void connectToServer()
+    {
+        Debug.Log("Trying to connect to server");
+        string ip = ipInput.text;
+        Debug.Log(ipInput.text);
+        int port = int.Parse(portInput.text); //int.Parse(portString);
+
+
+        PlayerPrefs.SetString("savedIP",ip);
+        PlayerPrefs.SetInt("savedPort", port);
+
+        Network.Connect(ip, port);
+
+    }
 	
 	private void SpawnPlayer()
 	{
@@ -170,10 +207,12 @@ public class NetworkManager : MonoBehaviour {
 	
 	void OnDisconnectedFromServer()
 	{
+
 		Network.RemoveRPCs(Network.player);
 		Network.DestroyPlayerObjects(Network.player);
-		
-	}
+        Application.LoadLevel(Application.loadedLevel);
+
+    }
 	
 	
 	

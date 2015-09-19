@@ -12,6 +12,8 @@ public class NetViewObjectScript : MonoBehaviour {
 	NetworkView nView;
     private bool buttonDown;
 
+    public Button castBtn;
+
     private bool caughtFish;
 
     void Start () {
@@ -23,12 +25,12 @@ public class NetViewObjectScript : MonoBehaviour {
 	}
 
     GUIStyle guiStyle;
-    private float rotAngle = 90;
+
     private Vector2 pivotPoint;
     public void OnGUI()
     {
        if (Network.isClient)
-         {
+         {/*
              if (GUI.RepeatButton(new Rect(Screen.width / 3 - 100, Screen.height / 3, 100, 50), "Cast"))
              {
                  Debug.Log("Sending RPC castGauge");
@@ -40,11 +42,11 @@ public class NetViewObjectScript : MonoBehaviour {
                  Debug.Log("Sending RPC CAST");
                  buttonDown = false;
                  nView.RPC("cast", RPCMode.All);
-             }
+             }*/
 
              if (caughtFish)
              {
-                 if (GUI.RepeatButton(new Rect(Screen.width / 3 - 100, Screen.height / 3 + 100, 150, 100), "Keep"))
+                /* if (GUI.RepeatButton(new Rect(Screen.width / 3 - 100, Screen.height / 3 + 100, 150, 100), "Keep"))
                  {
                      nView.RPC("keepFish", RPCMode.All);
                      caughtFish = false;
@@ -54,10 +56,10 @@ public class NetViewObjectScript : MonoBehaviour {
                  {
                      nView.RPC("releaseFish", RPCMode.All);
                      caughtFish = false;
-                 }
-             }
-
-             if (showRestartButton)
+                 }*/
+            }
+             /*
+            if (showRestartButton)
              {
                  if (GUI.RepeatButton(new Rect(Screen.width / 3 + 120, Screen.height / 3 + 100, 150, 100), "Restart Game"))
                  {
@@ -65,7 +67,7 @@ public class NetViewObjectScript : MonoBehaviour {
                      Network.Disconnect();
                      Application.LoadLevel(Application.loadedLevel);
                  }
-             }
+             }*/
       
         return;
         }
@@ -89,6 +91,15 @@ public class NetViewObjectScript : MonoBehaviour {
             // Retrieving data from server
         }
     }
+
+    [RPC]
+    public void showCastButton()
+    {
+        Debug.Log("Showing Cast Button");
+        UIController.UICont.showCastBtnF();
+    }
+
+
 
     [RPC]
     public void vibrate() {
@@ -132,10 +143,37 @@ public class NetViewObjectScript : MonoBehaviour {
     }
 
     [RPC]
-    public void enableCaughtUI()
+    public void enableCaughtUI(string name, float weight)
     {
         Debug.Log("Enabling keep or release ui elements");
+        UIController.UICont.setFishName(name, weight);
         caughtFish = true;
+    }
+
+    [RPC]
+    public void GetGameState()
+    {
+        Debug.Log("Requesting Current Game State");
+    }
+
+    [RPC]
+    public void RetrieveGameState(string s)
+    {
+        Debug.Log("Getting Current Game State");
+        Debug.Log("State: "+ s);
+    }
+
+    [RPC]
+    public void giveUp()
+    {
+        // gives up, game ends
+    }
+
+    [RPC]
+    public void showEndScreen()
+    {
+        UIController.UICont.gameOver();
+        // shows endscreen on phone
     }
 
     private bool showRestartButton;
@@ -145,8 +183,30 @@ public class NetViewObjectScript : MonoBehaviour {
         showRestartButton = true;
     }
 
+    [RPC]
+    public void enableHighScore()
+    {
+        // enable the highscore button on phone
+    }
 
-	void Update () 
+
+    [RPC]
+    public void inTransition()
+    {
+        // tells phone theres a animation transit going
+        UIController.UICont.inTransition = true;
+        Debug.Log("in transition");
+    }
+
+    [RPC]
+    public void transitionOver()
+    {
+        // tells phone theres a animation transit is over
+        UIController.UICont.inTransition = false;
+        Debug.Log("transition over");
+    }
+
+    void Update () 
     {
         reelRotationVector = transform.rotation;
         acceRotationVector = new Vector3(Input.acceleration.z, Input.acceleration.y, -Input.acceleration.x);

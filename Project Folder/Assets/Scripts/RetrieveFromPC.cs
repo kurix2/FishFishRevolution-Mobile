@@ -3,12 +3,12 @@ using System.Collections;
 
 public class RetrieveFromPC : MonoBehaviour {
 
-    private NetworkView nView;
+   // private NetworkView nView;
     private FishManager fishM;
 
 	// Use this for initialization
 	void Start () {
-        nView = GetComponent<NetworkView>();
+     //   nView = GetComponent<NetworkView>();
         fishM = FishManager.fishmanager;
 	}
 	

@@ -12,7 +12,6 @@ public class GameControl : MonoBehaviour {
 
     public static GameControl control;
 
-
     public enum State { connect, fishlog, game }
     public State currentState;
 

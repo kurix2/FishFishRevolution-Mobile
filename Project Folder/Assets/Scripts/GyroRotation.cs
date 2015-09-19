@@ -14,7 +14,7 @@ public class GyroRotation : MonoBehaviour {
         Input.gyro.updateInterval = 0.01f;
 
         parentOffset = new Vector3(90, 0, 90);
-        Quaternion currentGyro = Input.gyro.attitude;
+        //Quaternion currentGyro = Input.gyro.attitude;
         thisOffset = new Vector3(0, 90, 0);
 
     }

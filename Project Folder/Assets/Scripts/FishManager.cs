@@ -6,6 +6,8 @@ using System.Linq;
 public class FishManager : MonoBehaviour
 {
 
+    public GameObject FishLogContainer;
+
     public static FishManager fishmanager;
 
     public TextAsset FishToAdd;
@@ -25,8 +27,8 @@ public class FishManager : MonoBehaviour
     public Texture2D fishCountSprite;
     public Texture2D splashSprite;
 
-    //private float fishOffsetX = 175f;
-    //private float fishOffsetY = 135f;
+    public float fishOffsetX = 175f;
+    public float fishOffsetY = 135f;
      
     Fish hookedFish;
 
@@ -47,28 +49,33 @@ public class FishManager : MonoBehaviour
     {
         GUI.skin = customSkin;
 
-        float rotAngle = 90;
-        Vector2 pivotPoint = new Vector2(Screen.width / 2, Screen.height / 2);
-        GUIUtility.RotateAroundPivot(rotAngle, pivotPoint);
+       // float rotAngle = 90;
+       // Vector2 pivotPoint = new Vector2(Screen.width / 2, Screen.height / 2);
+      //  GUIUtility.RotateAroundPivot(rotAngle, pivotPoint);
         
         if (GameControl.control.currentState == GameControl.State.fishlog)
         {
-            GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height - 700, 250, 45), "Welcome to the Fish Log");
+           // GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height - 700, 250, 45), "Welcome to the Fish Log");
 
             for (int i = 0; i < fishList.Count; i++)
             {
                 if (fishLog.Any(obj => obj.getName() == fishList[i].getName()))
                 {
-                    GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height - 600 + (i * 170), 250, 45), fishList[i].getName());
-                    GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height - 510 + (i * 170), 250, 45), "Weight: " + GetHeaviestOfType(fishList[i].getName()));
-                    GUI.Label(new Rect(Screen.width / 2 - 250 , Screen.height - 570 + (i * 170), splashSprite.width, splashSprite.height), splashSprite);
+                    string fishIconPath = "Prefabs/Fish/Icons/" + fishList[i].getIcon();
+                    string stringToLoad = fishIconPath.Substring(0, fishIconPath.Length - 1);
+                    Texture2D tex = Resources.Load<Texture2D>(stringToLoad);
+                   
+                    GUI.Label(new Rect(FishLogContainer.transform.position.x - 630 + 200 * i, Screen.height - 400, splashSprite.width, splashSprite.height), tex);
+                    GUI.Label(new Rect(FishLogContainer.transform.position.x - 630 + 200 * i, Screen.height - 400 + 75, 250, 45), fishList[i].getName());
+                    GUI.Label(new Rect(FishLogContainer.transform.position.x - 630 + 200 * i, Screen.height - 400 + 125, 250, 45), "Weight: " + GetHeaviestOfType(fishList[i].getName()));
+                    
                     // if (GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 210, 200f, 100f), "Connect"))
 
                 }
 
                 else
                 { 
-                    GUI.Label(new Rect(Screen.width / 2 - 250, Screen.height - 600 + (i * 170), 250, 45), "???");
+                    GUI.Label(new Rect(FishLogContainer.transform.position.x - 630 + 200 * i, Screen.height - 400 + 75, 250, 45), "???");
                     // Add Greyed Icons here
                 }      
                                
